@@ -1,7 +1,7 @@
 {
   "name": "gulp-rimraf",
   "description": "rimraf plugin for gulp",
-  "version": "0.0.3",
+  "version": "0.0.4",
   "homepage": "https://github.com/robrich/gulp-rimraf",
   "repository": "git://github.com/robrich/gulp-rimraf.git",
   "author": "Rob Richardson (http://robrich.org/)",

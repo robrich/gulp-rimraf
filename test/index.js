@@ -122,5 +122,55 @@ describe('gulp-rimraf', function() {
 			stream.write(fakeFile);
 			stream.end();
 		});
+
+		it('should not error if target file does not exist', function(done) {
+			// Arrange
+			var tempFile = './noexist.txt';
+			var tempFileShort = 'noexist.txt';
+			fs.existsSync(tempFile).should.equal(false);
+
+			var stream = rimraf();
+			var fakeFile = {
+				path: tempFile,
+				shortened: tempFileShort,
+				contents: new Buffer(tempFileContent)
+			};
+
+			// Assert
+			stream.once('end', function(/*actualFile*/){
+				// Test that file is gone
+				fs.existsSync(tempFile).should.equal(false);
+				done();
+			});
+
+			// Act
+			stream.write(fakeFile);
+			stream.end();
+		});
+
+		it('should not error if target dir does not exist', function(done) {
+			// Arrange
+			var tempDir = './noexistDir';
+			var tempDirShort = 'noexistDir';
+			fs.existsSync(tempDir).should.equal(false);
+
+			var stream = rimraf();
+			var fakeFile = {
+				path: tempDir,
+				shortened: tempDirShort,
+				contents: ''
+			};
+
+			// Assert
+			stream.once('end', function(/*actualFile*/){
+				// Test that dir is gone
+				fs.existsSync(tempDir).should.equal(false);
+				done();
+			});
+
+			// Act
+			stream.write(fakeFile);
+			stream.end();
+		});
 	});
 });
