@@ -9,10 +9,13 @@ Usage
 -----
 
 ```javascript
+var filter = require('gulp-filter');
 var rimraf = require('gulp-rimraf');
 
-gulp.task('clean', function() {
-  gulp.files('./lib/*.js').pipe(rimraf());
+gulp.task('task', function() {
+  gulp.src('./**/*.js')
+    .pipe(filter('node_modules/**'))
+    .pipe(rimraf());
 });
 ```
 
