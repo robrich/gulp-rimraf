@@ -12,7 +12,7 @@ Usage
 var rimraf = require('gulp-rimraf');
 
 gulp.task('clean', function() {
-  gulp.files('./lib/*.js').pipe(rimraf());
+  gulp.src('./lib/*.js').pipe(rimraf());
 });
 ```
 
