@@ -10,7 +10,7 @@
     "gulpplugin"
   ],
   "dependencies": {
-    "event-stream": "*",
+    "map-stream": "~0.0.4",
     "rimraf": "~2.2.2"
   },
   "devDependencies": {
