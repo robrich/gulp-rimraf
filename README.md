@@ -9,12 +9,12 @@ Usage
 -----
 
 ```javascript
-var filter = require('gulp-filter');
+var ignore = require('gulp-ignore');
 var rimraf = require('gulp-rimraf');
 
 gulp.task('task', function() {
   gulp.src('./**/*.js')
-    .pipe(filter('node_modules/**'))
+    .pipe(ignore('node_modules/**'))
     .pipe(rimraf());
 });
 ```
