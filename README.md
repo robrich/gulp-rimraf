@@ -19,6 +19,17 @@ gulp.task('task', function() {
 });
 ```
 
+Files and folders outside the current working directory can be removed with force option.
+
+```javascript
+var rimraf = require('gulp-rimraf');
+
+gulp.task('task', function() {
+  gulp.src('../temp/*.js')
+    .pipe(rimraf({ force: true }));
+});
+```
+
 LICENSE
 -------
 
