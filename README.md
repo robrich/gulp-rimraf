@@ -18,6 +18,7 @@ gulp.task('task', function() {
     .pipe(rimraf());
 });
 ```
+Setting option 'read' to false prevents gulp to read the contents of the files and makes this task a lot faster.
 
 Files and folders outside the current working directory can be removed with force option.
 
