@@ -11,7 +11,7 @@ var map = require('map-stream'),
 module.exports = function(options){
 	return map(function (file, cb){
 		var cwd = file.cwd || process.cwd();
-		// For safety resolve paths always resolve pathss
+		// For safety always resolve paths
 		var filepath = path.resolve(cwd, file.path);
 		var starts = new RegExp('^' + cwd + '/');
 
