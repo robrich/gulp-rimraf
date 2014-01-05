@@ -6,11 +6,13 @@
 var rimraf = require('../');
 var fs = require('fs');
 var should = require('should');
+var path = require('path');
 require('mocha');
 
 describe('gulp-rimraf', function() {
 	describe('rimraf()', function() {
 		var tempFileContent = 'A test generated this file and it is safe to delete';
+		var cwd = process.cwd();
 
 		it('should pass file structure through', function(done) {
 			// Arrange
@@ -171,6 +173,158 @@ describe('gulp-rimraf', function() {
 			// Act
 			stream.write(fakeFile);
 			stream.end();
+		});
+
+		it('cannot remove the current working directory', function (done) {
+		    var stream = rimraf();
+
+		    stream.on('end', function () {
+		    	// Test that cwd is not removed
+		    	fs.existsSync(cwd).should.equal(true);
+		    	done();
+		    });
+
+		    // Act
+		    stream.write({
+		    	cwd: cwd,
+		    	path: cwd
+		    });
+
+		    stream.end();
+		});
+
+		it('cannot delete a folder outside the current working directory without force', function (done) {
+		    var stream = rimraf();
+		    var tempFolder = path.resolve(cwd, '../gulp-rimrafTemp/');
+
+		    if (!fs.existsSync(tempFolder)) { fs.mkdirSync(tempFolder); }
+
+		    stream.on('end', function () {
+		    	var exists = fs.existsSync(tempFolder);
+		    	exists.should.equal(true);
+		    	if (exists) {
+		    		fs.unlink(tempFolder, function () {
+		        		done();
+		        	});
+	    		} else {
+	    			done();
+	    		}
+		    });
+
+		    // Act
+		    stream.write({
+		    	cwd: cwd,
+		    	path: tempFolder
+		    });
+
+		    stream.end();
+		});
+
+		it('cannot delete a file outside the current working directory without force', function (done) {
+		    var stream = rimraf();
+		    var tempFile = path.resolve(cwd, '../temp.txt');
+
+		    if (!fs.existsSync(tempFile)) { fs.writeFileSync(tempFile, tempFileContent); }
+
+		    stream.on('end', function () {
+		    	var exists = fs.existsSync(tempFile);
+		    	exists.should.equal(true);
+		    	if (exists) {
+		    		fs.unlink(tempFile, function () {
+		        		done();
+		        	});
+	    		} else {
+	    			done();
+	    		}
+		    });
+
+		    // Act
+		    stream.write({
+		    	cwd: cwd,
+		    	path: tempFile
+		    });
+
+		    stream.end();
+		});
+
+		it('can delete a folder outside the current working directory with force', function (done) {
+			var stream = rimraf({ force: true });
+		    var tempFolder = path.resolve(cwd, '../gulp-rimrafTemp/');
+
+		    if (!fs.existsSync(tempFolder)) { fs.mkdirSync(tempFolder); }
+
+		    stream.on('end', function () {
+		    	fs.existsSync(tempFolder).should.equal(false);
+		    	done();
+		    });
+
+		    // Act
+		    stream.write({
+		    	cwd: cwd,
+		    	path: tempFolder
+		    });
+
+		    stream.end();
+		});
+
+		it('can delete a file outside the current working directory with force', function (done) {
+			var stream = rimraf({ force: true });
+		    var tempFile = path.resolve(cwd, '../temp.txt');
+
+		    if (!fs.existsSync(tempFile)) { fs.writeFileSync(tempFile, tempFileContent); }
+
+		    stream.on('end', function () {
+		    	fs.existsSync(tempFile).should.equal(false);
+		    	done();
+		    });
+
+		    // Act
+		    stream.write({
+		    	cwd: cwd,
+		    	path: tempFile
+		    });
+
+		    stream.end();
+		});
+
+		it('supports resolved file.path', function (done) {
+			var stream = rimraf();
+		    var resolvedTempFile = path.resolve(cwd, './tempResolved.txt');
+
+		    if (!fs.existsSync(resolvedTempFile)) { fs.writeFileSync(resolvedTempFile, tempFileContent); }
+
+		    stream.on('end', function () {
+		    	fs.existsSync(resolvedTempFile).should.equal(false);
+		    	done();
+		    });
+
+		    // Act
+		    stream.write({
+		    	cwd: cwd,
+		    	path: resolvedTempFile
+		    });
+
+		    stream.end();
+		});
+
+		it('supports unresolved file.path', function (done) {
+			var stream = rimraf();
+		    var unresolvedTempFile = './tempUnresolved.txt';
+
+		    if (!fs.existsSync(unresolvedTempFile)) { fs.writeFileSync(unresolvedTempFile, tempFileContent); }
+
+		    stream.on('end', function () {
+		    	fs.existsSync(unresolvedTempFile).should.equal(false);
+		    	done();
+		    });
+
+		    // Act
+		    stream.write({
+		    	cwd: cwd,
+		    	path: unresolvedTempFile
+		    });
+
+		    stream.end();
 		});
 	});
 });

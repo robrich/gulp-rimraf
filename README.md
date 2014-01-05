@@ -13,9 +13,21 @@ var ignore = require('gulp-ignore');
 var rimraf = require('gulp-rimraf');
 
 gulp.task('task', function() {
-  gulp.src('./**/*.js')
+  gulp.src('./**/*.js', { read: false })
     .pipe(ignore('node_modules/**'))
     .pipe(rimraf());
+});
+```
+Setting option 'read' to false prevents gulp to read the contents of the files and makes this task much faster.
+
+Files and folders outside the current working directory can be removed with force option.
+
+```javascript
+var rimraf = require('gulp-rimraf');
+
+gulp.task('task', function() {
+  gulp.src('../temp/*.js', { read: false })
+    .pipe(rimraf({ force: true }));
 });
 ```
 
