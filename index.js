@@ -13,6 +13,10 @@ module.exports = function(options){
 		options = {};
 	}
 
+	if (options.force && typeof options.force !== 'boolean') {
+		options.force = false;
+	}
+
 	return map(function (file, cb){
 		var cwd = file.cwd || process.cwd();
 		// For safety always resolve paths
