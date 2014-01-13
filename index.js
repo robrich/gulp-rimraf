@@ -17,14 +17,14 @@ module.exports = function(options){
 		var cwd = file.cwd || process.cwd();
 		// For safety always resolve paths
 		var filepath = path.resolve(cwd, file.path);
-		var starts = new RegExp('^' + cwd + '/');
+		var relativeFromCwd = path.relative(cwd, filepath);
 
-		if (filepath === cwd) {
+		if (relativeFromCwd === '') {
 			gutil.log('gulp-rimraf: Cannot delete the current working directory. (' + filepath + ')');
 			return cb(null, file);
 		}
 
-		if (!options.force && !starts.test(filepath)) {
+		if (!options.force && relativeFromCwd.substr(0, 2) === '..') {
 			gutil.log('gulp-rimraf: Cannot delete files or folders outside the current working directory. (' + filepath + ')');
 			return cb(null, file);
 		}
