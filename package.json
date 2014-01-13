@@ -7,7 +7,9 @@
   "author": "Rob Richardson (http://robrich.org/)",
   "main": "./index.js",
   "keywords": [
-    "gulpplugin"
+    "gulpplugin",
+    "rimraf",
+    "clean"
   ],
   "dependencies": {
     "map-stream": "~0.0.4",
