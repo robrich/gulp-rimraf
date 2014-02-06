@@ -13,7 +13,7 @@ var ignore = require('gulp-ignore');
 var rimraf = require('gulp-rimraf');
 
 gulp.task('task', function() {
-  gulp.src('./**/*.js', { read: false })
+  return gulp.src('./**/*.js', { read: false })
     .pipe(ignore('node_modules/**'))
     .pipe(rimraf());
 });
@@ -26,7 +26,7 @@ Files and folders outside the current working directory can be removed with `for
 var rimraf = require('gulp-rimraf');
 
 gulp.task('task', function() {
-  gulp.src('../temp/*.js', { read: false })
+  return gulp.src('../temp/*.js', { read: false })
     .pipe(rimraf({ force: true }));
 });
 ```
