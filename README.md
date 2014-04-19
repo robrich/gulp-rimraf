@@ -1,19 +1,28 @@
-![status](https://secure.travis-ci.org/robrich/gulp-rimraf.png?branch=master)
-
-gulp-rimraf
+gulp-rimraf ![status](https://secure.travis-ci.org/robrich/gulp-rimraf.png?branch=master)
 ===========
 
-[rimraf](https://github.com/isaacs/rimraf) plugin for [gulp](https://github.com/wearefractal/gulp)
+[rimraf](https://github.com/isaacs/rimraf) plugin for [gulp](https://github.com/gulpjs/gulp)
 
 Usage
 -----
+
+1. Delete a folder: use [rimraf](https://github.com/isaacs/rimraf) directly:
+
+```javascript
+var rimraf = require('rimraf'); // rimraf directly
+gulp.task('task', function (cb) {
+	rimraf('./folder', cb);
+});
+```
+
+2. Delete some files in a folder: use gulp-rimraf
 
 ```javascript
 var ignore = require('gulp-ignore');
 var rimraf = require('gulp-rimraf');
 
 gulp.task('task', function() {
-  return gulp.src('./**/*.js', { read: false })
+  return gulp.src('./**/*.js', { read: false }) // much faster
     .pipe(ignore('node_modules/**'))
     .pipe(rimraf());
 });
@@ -36,7 +45,7 @@ LICENSE
 
 (MIT License)
 
-Copyright (c) 2013 [Richardson & Sons, LLC](http://richardsonandsons.com/)
+Copyright (c) 2014 [Richardson & Sons, LLC](http://richardsonandsons.com/)
 
 Permission is hereby granted, free of charge, to any person obtaining
 a copy of this software and associated documentation files (the
