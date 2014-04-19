@@ -1,6 +1,6 @@
 /*global describe:false, it:false */
 
-"use strict";
+'use strict';
 
 var rimraf = require('../');
 

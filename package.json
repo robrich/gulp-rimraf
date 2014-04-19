@@ -1,7 +1,7 @@
 {
   "name": "gulp-rimraf",
   "description": "rimraf plugin for gulp",
-  "version": "0.0.9",
+  "version": "0.0.10",
   "homepage": "https://github.com/robrich/gulp-rimraf",
   "repository": "git://github.com/robrich/gulp-rimraf.git",
   "author": "Rob Richardson (http://robrich.org/)",
@@ -9,20 +9,24 @@
   "keywords": [
     "gulpplugin",
     "rimraf",
-    "clean"
+    "clean",
+    "remove",
+    "delete",
+    "gulp-clean"
   ],
   "dependencies": {
-    "rimraf": "~2.2.2",
-    "gulp-util": "~2.2.5"
+    "gulp-util": "^2.2.14",
+    "rimraf": "^2.2.6",
     "through2": "^0.4.1"
   },
   "devDependencies": {
-    "mocha": "*",
-    "should": "*"
+    "jshint": "^2.5.0",
+    "mocha": "^1.18.2",
+    "should": "^3.3.1",
     "vinyl": "^0.2.3"
   },
   "scripts": {
-    "test": "mocha"
+    "test": "mocha && jshint ./*.js && jshint ./test/*.js"
   },
   "engines": {
     "node": ">= 0.4.0"
