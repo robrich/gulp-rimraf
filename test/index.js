@@ -1,32 +1,34 @@
-/*jshint node:true */
 /*global describe:false, it:false */
 
 "use strict";
 
 var rimraf = require('../');
+
+var Vinyl = require('vinyl');
 var fs = require('fs');
 var path = require('path');
 var should = require('should');
-require('mocha');
 
 describe('gulp-rimraf', function() {
 	describe('rimraf()', function() {
 		var tempFileContent = 'A test generated this file and it is safe to delete';
 		var cwd = process.cwd();
+		var base = path.resolve('./test');
 
 		it('should pass file structure through', function(done) {
 			// Arrange
-			var tempFile = './temp.txt';
+			var tempFile = path.join(base, 'temp.txt');
 
 			var stream = rimraf();
-			var fakeFile = {
+			var fakeFile = new Vinyl({
 				cwd: cwd,
+				base: base,
 				path: tempFile,
 				contents: new Buffer(tempFileContent)
-			};
+			});
 
 			// Assert
-			stream.on('data', function(actualFile){
+			stream.once('data', function(actualFile){
 				// Test that content passed through
 				should.exist(actualFile);
 				should.exist(actualFile.path);
@@ -43,19 +45,20 @@ describe('gulp-rimraf', function() {
 
 		it('should delete a file', function(done) {
 			// Arrange
-			var tempFile = './temp.txt';
+			var tempFile = path.join(base, 'temp.txt');
 			fs.writeFileSync(tempFile, tempFileContent);
 			fs.existsSync(tempFile).should.equal(true);
 
 			var stream = rimraf();
-			var fakeFile = {
+			var fakeFile = new Vinyl({
 				cwd: cwd,
+				base: base,
 				path: tempFile,
 				contents: new Buffer(tempFileContent)
-			};
+			});
 
 			// Assert
-			stream.once('end', function(/*actualFile*/){
+			stream.once('data', function(/*file, enc, cb*/){
 				// Test that file is gone
 				fs.existsSync(tempFile).should.equal(false);
 				done();
@@ -68,20 +71,20 @@ describe('gulp-rimraf', function() {
 
 		it('should delete an empty folder', function(done) {
 			// Arrange
-			var tempDir = './tempDir';
+			var tempDir = path.join(base, 'tempDir');
 			fs.mkdirSync(tempDir);
 			fs.existsSync(tempDir).should.equal(true);
-			// TODO: should be a dir
 
 			var stream = rimraf();
-			var fakeFile = {
+			var fakeFile = new Vinyl({
 				cwd: cwd,
+				base: base,
 				path: tempDir,
 				contents: ''
-			};
+			});
 
 			// Assert
-			stream.once('end', function(/*actualFile*/){
+			stream.once('data', function(/*file, enc, cb*/){
 				// Test that dir is gone
 				fs.existsSync(tempDir).should.equal(false);
 				done();
@@ -94,21 +97,22 @@ describe('gulp-rimraf', function() {
 
 		it('should delete a folder with files', function(done) {
 			// Arrange
-			var tempDir = './tempDir';
+			var tempDir = path.join(base, 'tempDir');
 			fs.mkdirSync(tempDir);
 			fs.existsSync(tempDir).should.equal(true);
-			fs.writeFileSync(tempDir+'/file1.txt', tempFileContent);
-			fs.writeFileSync(tempDir+'/file2.txt', tempFileContent);
+			fs.writeFileSync(path.join(tempDir,'file1.txt'), tempFileContent);
+			fs.writeFileSync(path.join(tempDir,'file2.txt'), tempFileContent);
 
 			var stream = rimraf();
-			var fakeFile = {
+			var fakeFile = new Vinyl({
 				cwd: cwd,
+				base: base,
 				path: tempDir,
 				contents: ''
-			};
+			});
 
 			// Assert
-			stream.once('end', function(/*actualFile*/){
+			stream.once('data', function(/*file, enc, cb*/){
 				// Test that dir is gone
 				fs.existsSync(tempDir).should.equal(false);
 				done();
@@ -121,18 +125,19 @@ describe('gulp-rimraf', function() {
 
 		it('should not error if target file does not exist', function(done) {
 			// Arrange
-			var tempFile = './noexist.txt';
+			var tempFile = path.join(base, 'noexist.txt');
 			fs.existsSync(tempFile).should.equal(false);
 
 			var stream = rimraf();
-			var fakeFile = {
+			var fakeFile = new Vinyl({
 				cwd: cwd,
+				base: base,
 				path: tempFile,
 				contents: new Buffer(tempFileContent)
-			};
+			});
 
 			// Assert
-			stream.once('end', function(/*actualFile*/){
+			stream.once('data', function(/*actualFile*/){
 				// Test that file is gone
 				fs.existsSync(tempFile).should.equal(false);
 				done();
@@ -149,14 +154,15 @@ describe('gulp-rimraf', function() {
 			fs.existsSync(tempDir).should.equal(false);
 
 			var stream = rimraf();
-			var fakeFile = {
+			var fakeFile = new Vinyl({
 				cwd: cwd,
+				base: base,
 				path: tempDir,
 				contents: ''
-			};
+			});
 
 			// Assert
-			stream.once('end', function(/*actualFile*/){
+			stream.once('data', function(/*actualFile*/){
 				// Test that dir is gone
 				fs.existsSync(tempDir).should.equal(false);
 				done();
@@ -172,17 +178,18 @@ describe('gulp-rimraf', function() {
 			var stream = rimraf();
 
 			// Assert
-			stream.once('end', function () {
+			stream.once('error', function () {
 				// Test that cwd is not removed
 				fs.existsSync(cwd).should.equal(true);
 				done();
 			});
 
 			// Act
-			stream.write({
+			stream.write(new Vinyl({
 				cwd: cwd,
+				base: cwd,
 				path: cwd
-			});
+			}));
 
 			stream.end();
 		});
@@ -197,7 +204,7 @@ describe('gulp-rimraf', function() {
 			}
 
 			// Assert
-			stream.once('end', function () {
+			stream.once('error', function () {
 				var exists = fs.existsSync(tempFolder);
 				exists.should.equal(true);
 				if (exists) {
@@ -210,10 +217,11 @@ describe('gulp-rimraf', function() {
 			});
 
 			// Act
-			stream.write({
+			stream.write(new Vinyl({
 				cwd: cwd,
+				base: cwd,
 				path: tempFolder
-			});
+			}));
 
 			stream.end();
 		});
@@ -228,7 +236,7 @@ describe('gulp-rimraf', function() {
 			}
 
 			// Assert
-			stream.once('end', function () {
+			stream.once('error', function () {
 				var exists = fs.existsSync(tempFile);
 				exists.should.equal(true);
 				if (exists) {
@@ -241,10 +249,11 @@ describe('gulp-rimraf', function() {
 			});
 
 			// Act
-			stream.write({
+			stream.write(new Vinyl({
 				cwd: cwd,
+				base: cwd,
 				path: tempFile
-			});
+			}));
 
 			stream.end();
 		});
@@ -259,16 +268,17 @@ describe('gulp-rimraf', function() {
 			}
 
 			// Assert
-			stream.once('end', function () {
+			stream.once('data', function () {
 				fs.existsSync(tempFolder).should.equal(false);
 				done();
 			});
 
 			// Act
-			stream.write({
+			stream.write(new Vinyl({
 				cwd: cwd,
+				base: cwd,
 				path: tempFolder
-			});
+			}));
 
 			stream.end();
 		});
@@ -283,16 +293,17 @@ describe('gulp-rimraf', function() {
 			}
 
 			// Assert
-			stream.once('end', function () {
+			stream.once('data', function () {
 				fs.existsSync(tempFile).should.equal(false);
 				done();
 			});
 
 			// Act
-			stream.write({
+			stream.write(new Vinyl({
 				cwd: cwd,
+				base: cwd,
 				path: tempFile
-			});
+			}));
 
 			stream.end();
 		});
@@ -307,16 +318,17 @@ describe('gulp-rimraf', function() {
 			}
 
 			// Assert
-			stream.once('end', function () {
+			stream.once('data', function () {
 				fs.existsSync(resolvedTempFile).should.equal(false);
 				done();
 			});
 
 			// Act
-			stream.write({
+			stream.write(new Vinyl({
 				cwd: cwd,
+				base: cwd,
 				path: resolvedTempFile
-			});
+			}));
 
 			stream.end();
 		});
@@ -331,16 +343,17 @@ describe('gulp-rimraf', function() {
 			}
 
 			// Assert
-			stream.once('end', function () {
+			stream.once('data', function () {
 				fs.existsSync(unresolvedTempFile).should.equal(false);
 				done();
 			});
 
 			// Act
-			stream.write({
+			stream.write(new Vinyl({
 				cwd: cwd,
+				base: base,
 				path: unresolvedTempFile
-			});
+			}));
 
 			stream.end();
 		});

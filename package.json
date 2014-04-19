@@ -12,13 +12,14 @@
     "clean"
   ],
   "dependencies": {
-    "map-stream": "~0.0.4",
     "rimraf": "~2.2.2",
     "gulp-util": "~2.2.5"
+    "through2": "^0.4.1"
   },
   "devDependencies": {
     "mocha": "*",
     "should": "*"
+    "vinyl": "^0.2.3"
   },
   "scripts": {
     "test": "mocha"

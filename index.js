@@ -1,12 +1,11 @@
-/*jshint node:true */
+'use strict';
 
-"use strict";
+var gutil = require('gulp-util');
+var through = require('through2');
+var rimraf = require('rimraf');
+var path = require('path');
 
-var map = require('map-stream'),
-	rimraf = require('rimraf'),
-	fs = require('fs'),
-	gutil = require('gulp-util'),
-	path = require('path');
+var PLUGIN_NAME = 'gulp-rimraf';
 
 module.exports = function(options){
 	if (!options) {
@@ -17,37 +16,34 @@ module.exports = function(options){
 		options.force = false;
 	}
 
-	return map(function (file, cb){
+	function del(file, encoding, cb){
+		//jshint validthis:true
+
 		var cwd = file.cwd || process.cwd();
 		// For safety always resolve paths
 		var filepath = path.resolve(cwd, file.path);
 		var relativeFromCwd = path.relative(cwd, filepath);
 
 		if (relativeFromCwd === '') {
-			gutil.log('gulp-rimraf: Cannot delete the current working directory. (' + filepath + ')');
-			return cb(null, file);
+			this.emit('error', new gutil.PluginError(PLUGIN_NAME, 'Cannot delete the current working directory: ' + filepath));
+			this.push(file);
+			return cb();
 		}
 
 		if (!options.force && relativeFromCwd.substr(0, 2) === '..') {
-			gutil.log('gulp-rimraf: Cannot delete files or folders outside the current working directory. (' + filepath + ')');
-			return cb(null, file);
+			this.emit('error', new gutil.PluginError(PLUGIN_NAME, 'Cannot delete files or folders outside the current working directory: ' + filepath));
+			this.push(file);
+			return cb();
 		}
 
 		rimraf(filepath, function (err) {
-			if (!err || !fs.existsSync(filepath)) {
-				return cb(null, file);
+			if (err) {
+				this.emit('error', new gutil.PluginError(PLUGIN_NAME, err));
 			}
-			rimraf(filepath, function (err) {
-				if (!err || !fs.existsSync(filepath)) {
-					return cb(null, file);
-				}
-				rimraf(filepath, function (err) {
-					if (!err || !fs.existsSync(filepath)) {
-						return cb(null, file);
-					}
-					return cb(err);
-				});
-			});
-		});
-	});
+			this.push(file);
+			cb();
+		}.bind(this));
+	}
+
+	return through.obj(del);
 };
