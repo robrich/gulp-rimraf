@@ -1,4 +1,4 @@
-/*global describe:false, it:false */
+/*global describe:false, it:false, beforeEach:false, afterEach:false */
 
 'use strict';
 
@@ -8,12 +8,26 @@ var Vinyl = require('vinyl');
 var fs = require('fs');
 var path = require('path');
 var should = require('should');
+var gutil = require('gulp-util');
 
 describe('gulp-rimraf', function() {
 	describe('rimraf()', function() {
 		var tempFileContent = 'A test generated this file and it is safe to delete';
 		var cwd = process.cwd();
 		var base = path.resolve('./test');
+
+		var realLog = gutil.log;
+
+		var logContent = [];
+		beforeEach(function () {
+			gutil.log = function () {
+				logContent.push(Array.prototype.join.call(arguments, ' '));
+			};
+		});
+		afterEach(function () {
+			gutil.log = realLog;
+			logContent = [];
+		});
 
 		it('should pass file structure through', function(done) {
 			// Arrange
@@ -355,6 +369,63 @@ describe('gulp-rimraf', function() {
 				path: unresolvedTempFile
 			}));
 
+			stream.end();
+		});
+
+		it('should not log when not directed to', function(done) {
+			// Arrange
+			var tempFile = path.join(base, 'temp.txt');
+			fs.writeFileSync(tempFile, tempFileContent);
+			fs.existsSync(tempFile).should.equal(true);
+
+			var stream = rimraf();
+			var fakeFile = new Vinyl({
+				cwd: cwd,
+				base: base,
+				path: tempFile,
+				contents: new Buffer(tempFileContent)
+			});
+
+			// Assert
+			stream.once('data', function(/*file, enc, cb*/){
+				// Test that file is gone
+				fs.existsSync(tempFile).should.equal(false);
+				logContent.length.should.equal(0);
+				done();
+			});
+
+			// Act
+			stream.write(fakeFile);
+			stream.end();
+		});
+
+		it('should log when directed to', function(done) {
+			// Arrange
+			var tempFile = path.join(base, 'temp.txt');
+			fs.writeFileSync(tempFile, tempFileContent);
+			fs.existsSync(tempFile).should.equal(true);
+
+			var stream = rimraf({
+				verbose: true
+			});
+			var fakeFile = new Vinyl({
+				cwd: cwd,
+				base: base,
+				path: tempFile,
+				contents: new Buffer(tempFileContent)
+			});
+
+			// Assert
+			stream.once('data', function(/*file, enc, cb*/){
+				// Test that file is gone
+				fs.existsSync(tempFile).should.equal(false);
+				logContent.length.should.equal(1);
+				logContent[0].indexOf(tempFile).should.be.above(-1);
+				done();
+			});
+
+			// Act
+			stream.write(fakeFile);
 			stream.end();
 		});
 	});

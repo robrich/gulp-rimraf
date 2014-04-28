@@ -36,6 +36,10 @@ module.exports = function(options){
 			return cb();
 		}
 
+		if (options.verbose) {
+			gutil.log('gulp-rimraf: removed '+filepath);
+		}
+
 		rimraf(filepath, function (err) {
 			if (err) {
 				this.emit('error', new gutil.PluginError(PLUGIN_NAME, err));
