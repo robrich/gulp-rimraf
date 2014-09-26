@@ -1,6 +1,8 @@
 gulp-rimraf ![status](https://secure.travis-ci.org/robrich/gulp-rimraf.png?branch=master)
 ===========
 
+Deprecated in favor of [https://github.com/gulpjs/gulp/blob/master/docs/recipes/delete-files-folder.md](https://github.com/gulpjs/gulp/blob/master/docs/recipes/delete-files-folder.md)
+
 [rimraf](https://github.com/isaacs/rimraf) plugin for [gulp](https://github.com/gulpjs/gulp)
 
 Usage
