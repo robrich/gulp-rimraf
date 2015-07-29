@@ -9,7 +9,6 @@ Usage
 -----
 
 1. Delete a folder: use [rimraf](https://github.com/isaacs/rimraf) directly *(you don't need gulp-rimraf!)*:
-
 ```javascript
 var rimraf = require('rimraf'); // rimraf directly
 gulp.task('task', function (cb) {
