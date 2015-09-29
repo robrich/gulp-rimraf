@@ -8,38 +8,38 @@ Deprecated in favor of [https://github.com/gulpjs/gulp/blob/master/docs/recipes/
 Usage
 -----
 
-1. Delete a folder: use [rimraf](https://github.com/isaacs/rimraf) directly *(you don't need gulp-rimraf!)*:
+ 1. Delete a folder: use [rimraf](https://github.com/isaacs/rimraf) directly *(you don't need gulp-rimraf!)*:
 
-```javascript
-var rimraf = require('rimraf'); // rimraf directly
-gulp.task('task', function (cb) {
+ ```javascript
+ var rimraf = require('rimraf'); // rimraf directly
+ gulp.task('task', function (cb) {
 	rimraf('./folder', cb);
-});
-```
+ });
+ ```
 
-2. Delete some files in a folder: use gulp-rimraf
+ 2. Delete some files in a folder: use gulp-rimraf
 
-```javascript
-var ignore = require('gulp-ignore');
-var rimraf = require('gulp-rimraf');
+ ```javascript
+ var ignore = require('gulp-ignore');
+ var rimraf = require('gulp-rimraf');
 
-gulp.task('task', function() {
+ gulp.task('task', function() {
   return gulp.src('./**/*.js', { read: false }) // much faster
     .pipe(ignore('node_modules/**'))
     .pipe(rimraf());
-});
-```
-Setting option `read` to false prevents gulp to read the contents of the files and makes this task much faster.
+ });
+ ```
+ Setting option `read` to false prevents gulp to read the contents of the files and makes this task much faster.
 
-Files and folders outside the current working directory can be removed with `force` option.
+ Files and folders outside the current working directory can be removed with `force` option.
 
-```javascript
-var rimraf = require('gulp-rimraf');
+ ```javascript
+ var rimraf = require('gulp-rimraf');
 
-gulp.task('task', function() {
+ gulp.task('task', function() {
   return gulp.src('../temp/*.js', { read: false })
     .pipe(rimraf({ force: true }));
-});
+ });
 ```
 
 LICENSE
