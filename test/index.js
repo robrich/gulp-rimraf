@@ -8,7 +8,6 @@ var Vinyl = require('vinyl');
 var fs = require('fs');
 var path = require('path');
 var should = require('should');
-var gutil = require('gulp-util');
 
 describe('gulp-rimraf', function() {
 	describe('rimraf()', function() {
@@ -16,16 +15,16 @@ describe('gulp-rimraf', function() {
 		var cwd = process.cwd();
 		var base = path.resolve('./test');
 
-		var realLog = gutil.log;
+		var realLog = console.log;
 
 		var logContent = [];
 		beforeEach(function () {
-			gutil.log = function () {
+			console.log = function () {
 				logContent.push(Array.prototype.join.call(arguments, ' '));
 			};
 		});
 		afterEach(function () {
-			gutil.log = realLog;
+			console.log = realLog;
 			logContent = [];
 		});
 

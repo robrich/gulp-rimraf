@@ -1,11 +1,8 @@
 'use strict';
 
-var gutil = require('gulp-util');
 var through = require('through2');
 var rimraf = require('rimraf');
 var path = require('path');
-
-var PLUGIN_NAME = 'gulp-rimraf';
 
 module.exports = function(options){
 	if (!options) {
@@ -25,24 +22,24 @@ module.exports = function(options){
 		var relativeFromCwd = path.relative(cwd, filepath);
 
 		if (relativeFromCwd === '') {
-			this.emit('error', new gutil.PluginError(PLUGIN_NAME, 'Cannot delete the current working directory: ' + filepath));
+			this.emit('error', new Error('Cannot delete the current working directory: ' + filepath));
 			this.push(file);
 			return cb();
 		}
 
 		if (!options.force && relativeFromCwd.substr(0, 2) === '..') {
-			this.emit('error', new gutil.PluginError(PLUGIN_NAME, 'Cannot delete files or folders outside the current working directory: ' + filepath));
+			this.emit('error', new Error('Cannot delete files or folders outside the current working directory: ' + filepath));
 			this.push(file);
 			return cb();
 		}
 
 		if (options.verbose) {
-			gutil.log('gulp-rimraf: removed '+filepath);
+			console.log('gulp-rimraf: removed '+filepath);
 		}
 
 		rimraf(filepath, function (err) {
 			if (err) {
-				this.emit('error', new gutil.PluginError(PLUGIN_NAME, err));
+				this.emit('error', err);
 			}
 			this.push(file);
 			cb();
