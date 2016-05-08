@@ -1,4 +1,4 @@
-gulp-rimraf ![status](https://secure.travis-ci.org/robrich/gulp-rimraf.png?branch=master)
+gulp-rimraf ![status](https://secure.travis-ci.org/robrich/gulp-rimraf.png?branch=master) ![mentions](http://107.170.57.103/robrich/gulp-rimraf.svg)
 ===========
 
 Deprecated in favor of [https://github.com/gulpjs/gulp/blob/master/docs/recipes/delete-files-folder.md](https://github.com/gulpjs/gulp/blob/master/docs/recipes/delete-files-folder.md)
