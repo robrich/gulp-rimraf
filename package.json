@@ -1,7 +1,7 @@
 {
   "name": "gulp-rimraf",
   "description": "rimraf plugin for gulp",
-  "version": "0.2.2",
+  "version": "1.0.0",
   "homepage": "https://github.com/robrich/gulp-rimraf",
   "repository": "git://github.com/robrich/gulp-rimraf.git",
   "author": "Rob Richardson (http://robrich.org/)",
@@ -16,19 +16,16 @@
   ],
   "dependencies": {
     "rimraf": "^2.6.2",
-    "through2": "^2.0.3"
+    "through2": "^3.0.1"
   },
   "devDependencies": {
     "jshint": "^2.9.5",
-    "mocha": "^4.1.0",
+    "mocha": "^6.1.4",
     "should": "^13.2.0",
-    "vinyl": "^1.2.0"
+    "vinyl": "^2.2.0"
   },
   "scripts": {
     "test": "mocha && jshint ."
-  },
-  "engines": {
-    "node": ">= 0.10.0"
   },
   "license": "MIT"
 }
